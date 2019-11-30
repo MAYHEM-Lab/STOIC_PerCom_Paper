@@ -2606,12 +2606,12 @@
 \def\indexname{Index}
 \def\figurename{Fig.}
 \def\tablename{TABLE}
-\@IEEEcompsocconfonly{\def\figurename{Figure}}
+\@IEEEcompsocconfonly{\def\figurename{Figure}\def\tablename{Table}}
 \def\partname{Part}
 \def\appendixname{Appendix}
 \def\abstractname{Abstract}
 % IEEE specific names
-\def\IEEEkeywordsname{Index Terms}
+\def\IEEEkeywordsname{Keywords}
 \def\IEEEproofname{Proof}
 
 

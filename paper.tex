@@ -1,30 +1,26 @@
 \documentclass[10pt, conference]{IEEEtran}
-
 \newcommand{\ignore}[1]{}
-
 % *** GRAPHICS RELATED PACKAGES ***
 \usepackage[pdftex]{graphicx}
 \usepackage{xcolor}
 \usepackage{caption} %needed to make captions on figure* centered
 \graphicspath{{./figures/}}
 \DeclareGraphicsExtensions{.pdf,.png}
-\usepackage[]{hyperref}
-
+\usepackage[bookmarks=false]{hyperref}
 \usepackage[linesnumbered, ruled, vlined]{algorithm2e}
 
 % correct bad hyphenation here
 \hyphenation{Tele-operable}
 
-
+\begin{document}
 
 % paper title
 \title{STOIC: Serverless Teleoperable Hybrid Cloud for Machine Learning Applications on Edge Device}
 
-
 \author{\IEEEauthorblockN{Michael Zhang, Chandra Krintz, Rich Wolski}
-\IEEEauthorblockA{Dept. of Computer Science \\
-University of California, Santa Barbara\\
-\{lebo, ckrintz, rich, mock\}@cs.ucsb.edu}
+\IEEEauthorblockA{\textit{Dept. of Computer Science} \\
+\textit{University of California, Santa Barbara}\\
+\textit{\{lebo, ckrintz, rich\}@cs.ucsb.edu}}
 }
 
 %\author{\IEEEauthorblockN{Omitted for Blind Review}%\\
@@ -33,7 +29,6 @@ University of California, Santa Barbara\\
 %&\{blind\}@blind.blind.blind}
 %}
 
-\begin{document}
 
 
 % make the title area
@@ -45,7 +40,7 @@ University of California, Santa Barbara\\
 \end{abstract}
 
 \begin{IEEEkeywords}
-Serverless computing; Model optimization; Hyperparameter tuning
+Serverless computing; Edge computing; Image Processing; Internet of Things
 \end{IEEEkeywords}
 
 
@@ -58,8 +53,6 @@ Serverless computing; Model optimization; Hyperparameter tuning
 % For peerreview papers, this IEEEtran command inserts a page break and
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
-
-
 
 \section{Introduction}
 \label{sec:intro}
