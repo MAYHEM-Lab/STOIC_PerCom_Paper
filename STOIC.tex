@@ -1,21 +1,22 @@
-To leverage accelerator and distributed scheduling using the serverless architecture, we have developed STOIC, a framework for executing machine learning applications in hybrid cloud consisting of edge devices and public data centers. The STOIC streamlines the end-to-end process of packaging, transferring, scheduling, executing and retrieving result for machine learning applications. Figure~\ref{fig:STOIC} shows the architecture of STOIC, which is composed by three principal pillars: Edge Cloud, Private Cloud and Public GPU cloud.
-
-\begin{figure}[t] \centering 
-\includegraphics[scale=0.4]{STOIC}
-\caption{\textbf{The Architecture of STOIC}}
-\label{fig:STOIC}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{STOIC}
+    \caption{\textbf{The Architecture of STOIC}}
+    \label{fig:STOIC}
 \end{figure}
 
-\subsection{Edge Cloud}
- The edge cloud is a collection of edge devices, including multiple motion-detecting camera traps and local servers, deployed in open field and research facility at Sedgwick Natural Reserve~\cite{ref:sedgwick}. Across the field, especially at the water pond, we install camera traps to capture images of wildlife and are connected by microwave link networks to local servers in the research facility. When a motion is detected, the camera traps take photos and persist the images to the attached disk volume. Periodically, they transfer the photos to local servers in the facility, where STOIC socket server constantly listens for batch of images and cloud scheduler assigns the task to different cloud components. 
+To leverage accelerator and distributed scheduling using the serverless architecture, we have developed STOIC, a framework for executing machine learning applications in hybrid cloud consisting of edge devices and public data centers. The STOIC streamlines the end-to-end process of packaging, transferring, scheduling, executing and retrieving result for machine learning applications. Figure~\ref{fig:STOIC} shows the architecture of STOIC, which is composed by three principal pillars: Edge Controller, Edge Cloud and Public GPU cloud.
+
+\subsection{Edge Controller}
+ We deploy a collection of edge devices, including multiple motion-detecting camera traps in open field and a local server as edge controller in the research facility at Sedgwick Natural Reserve~\cite{ref:sedgwick}. Across the field, especially at the water pond, we install camera traps to capture images of wildlife and they are connected by microwave link networks to edge controller in the research facility. When a motion is detected, the camera traps take photos and persist the images to the attached disk volume. Periodically, they transfer the photos to edge controller in the facility, where STOIC socket server constantly listens for batch of images and cloud scheduler assigns the task to different cloud components. 
  
- \subsection{Private Cloud}
+ \subsection{Edge Cloud}
  
- As a relay between edge cloud and public cloud, private cloud can be placed anywhere, preferably near the edge cloud, to lower the latency. Currently, we built it up in our lab by a cluster of nine Intel NUCs~\cite{ref:nucs} with a direct connection over microwave radio to Sedgwick Natural Reserve and edge devices there. It is managed by Eucalyptus cloud system~\cite{ref:euca} that supports Linux virtual machine instance of Ubuntu and CentOS. Running on an instance, the STOIC socket client listens for the request from edge cloud and STOIC requester interacts with public GPU cloud to complete the designated task.
+ As a intermediate layer between edge cloud and public cloud, edge cloud can be placed anywhere, preferably near the edge devices, to lower the latency. Currently, we built it up in our lab by a cluster of nine Intel NUCs~\cite{ref:nucs} with a direct connection over microwave radio to edge devices at Sedgwick Natural Reserve. It is managed by Eucalyptus cloud system~\cite{ref:euca} that supports Linux virtual machine instance of Ubuntu and CentOS. Running on an instance, the STOIC socket client listens for the request from edge device and, then, either executes the job locally on edge cloud or has STOIC requester interacts with public GPU cloud to complete the designated task.
  
  \subsection{Public GPU Cloud}
  
- The public GPU cloud is built on the top of Nautilus Cloud~\cite{ref:nautilus}, which is a HyperCluster research platform led by researchers at UC San Diego, National Science Foundation, Department of Energy and various participating universities globally. Being designed for running data and computation intensive applications, Nautilus uses Kubernetes~\cite{ref:k8s} as interface to manage and scale containerized applications and uses Rook~\cite{ref:rook} to automate Ceph~\cite{ref:ceph} data services. As of Nov. 2019, 141 computing nodes across the US joined Nautilus Cloud and 422 GPUs are available in the cluster. All these node are connected via a multi-campus network. We consider Nautilus as an ideal public cloud to leverage accelerators in Serverless architecture to serve edge devices. 
+ The public GPU cloud is built on the top of Nautilus Cloud~\cite{ref:nautilus}, which is a HyperCluster research platform led by researchers at UC San Diego, National Science Foundation, Department of Energy and various participating universities globally. Being designed for running data and computation intensive applications, Nautilus uses Kubernetes~\cite{ref:k8s} as interface to manage and scale containerized applications and uses Rook~\cite{ref:rook} to automate Ceph~\cite{ref:ceph} data services. As of Nov. 2019, 141 computing nodes across the US joined Nautilus Cloud and 422 GPUs are available in the cluster. All these node are connected via a multi-campus network. We consider Nautilus as an ideal public cloud to leverage accelerator (GPUs) in serverless architecture to serve edge devices. 
  
  \subsection{Implementation}
  
