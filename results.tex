@@ -22,21 +22,26 @@ We first test the efficacy of STOIC by processing an image batch of fixed size a
 \label{fig:response-time}}
 \end{figure}
 
-Additionally, we test STOIC by processing a series of image batches of growing sizes both on four runtimes and STOIC. The progressive response times are depicted in Figure~\ref{fig:response-time}. The x-axis is the size of image batch and the y-axis is the total response time~($T_r$) in seconds. The red curve represents the linearly increasing latency from \textit{edge} runtime, whereas the yellow one depicts that for \textit{cpu} runtime at Nautilus Cloud. We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus Cloud are usually more powerful than Edge Cloud. The pink and green curve represent the \textit{gpu1} and \textit{gpu2} runtime respectively and they intersect at the batch size of 95, at which STOIC would switch the deployment of task from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of task to the runtime with the least latency. According to such result, we ensure STOIC improves system performance by dynamic scheduling based on image batch size.
-
-
-\begin{figure}[t] \centering 
-\includegraphics[scale=0.42]{figures/24-batches}
-\caption{\textbf{Average total response time~($T_r$) of 24-hour empirical dataset}: The x-axis represents runtimes, while y-axis represents the average total response time~($T_r$) of 24-hour dataset. The 24-hour batch sizes are generated from the distribution of historical data. 
-\label{fig:24-batch}}
-\end{figure}
+Additionally, we test STOIC by processing a series of image batches of growing sizes both on four runtimes and STOIC. The progressive response times are depicted in Figure~\ref{fig:response-time}. The x-axis is the size of image batch and the y-axis is the total response time~($T_r$) in seconds. The red curve represents the linearly increasing latency from \textit{edge} runtime, whereas the yellow one depicts that for \textit{cpu} runtime at Nautilus Cloud. We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus Cloud are usually more powerful than Edge Cloud. The pink and green curve represent the \textit{gpu1} and \textit{gpu2} runtime respectively and they intersect at the batch size of 95, at which STOIC would switch the deployment of task from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of tasks to the runtime with the least latency. According to such result, we ensure STOIC improves system performance by dynamic scheduling based on image batch size.
 
 
 \subsection{Empirical Experiment}
 
+
+\begin{table}[t]
+    \centering
+    \input{tables/24-batch}
+    \caption{\textbf{Average total response time~($T_r$) and speed-up on 24-hour dataset}: Comparing with four single runtimes, STOIC achieves lowest average latency and speed-up ranging from 6.48\% to 32.05\%. }
+    \label{tab:24-batches}
+\end{table}
+
+
 As a empirical evaluation of STOIC, we compare the total response time~($T_r$) of multiple image batches of varying sizes by four single runtimes and STOIC. To accelerate the repetitive experiment, we developed a simulator to generate image batches based on the frequency distribution of WTB dataset. According to 2016 WTB dataset, the size of image batch fits to normal distribution $\mathbf{N}(\mu = 42.75, \sigma^2 = 39.5)$. Thus, the simulator generates 24 image batches in the Edge Cloud to emulate streaming data in one day from open field camera traps. To conduct unbiased evaluation, we seed the simulator to make these 24 image batches consistent across all runtimes and STOIC. 
 
-To ensure the validity of outcome, We again run such experiment 10 times for each runtime scenario and report the average value. Figure~\ref{fig:24-batch} demonstrates the average total response time~($T_r$) for four individual runtimes and STOIC. In comparison, STOIC obviously has the lowest average latency in our experiment. According to such result, we conclude that STOIC outperforms single-runtime scheduling mechanism on empirical dataset and real-world machine learning application.
+\begin{figure}[t] \centering 
+\includegraphics[scale=0.42]{figures/24-batches}
+\caption{\textbf{Average total response time~($T_r$) and speed-up on 24-hour dataset}: The x-axis represents runtimes, while left y-axis represents the average total response time~($T_r$) and right y-axis represents speed-up by STOIC in contrast to other runtimes on 24-hour dataset. The 24-hour batch sizes are generated from the distribution of historical data. 
+\label{fig:24-batch}}
+\end{figure}
 
-
-
+To ensure the validity of outcome, We again run such experiment 10 times for each runtime scenario and report the average value. Figure~\ref{fig:24-batch} demonstrates the average total response time~($T_r$) for four individual runtimes and STOIC. Listed in Table~\ref{tab:24-batches}, STOIC has achieved the lowest average latency and sped up four single runtimes ranging from 6.48\% to 32.05\% in our experiment. According to such result, we conclude that STOIC outperforms single-runtime scheduling mechanism on empirical dataset and real-world machine learning application.
