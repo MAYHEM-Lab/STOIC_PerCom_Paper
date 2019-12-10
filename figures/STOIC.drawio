@@ -1,10 +1,10 @@
-<mxfile host="www.draw.io" modified="2019-12-10T01:51:04.831Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36" etag="OwxYhDZUo4Zwgy1q3kJv" version="12.3.9" type="github" pages="1">
+<mxfile host="www.draw.io" modified="2019-12-10T02:02:54.338Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36" etag="kE9_TGJNisi1u9JUMhWK" version="12.3.9" type="github" pages="1">
   <diagram id="0d7cefc2-ccd6-e077-73ed-a8e48b0cddf6" name="Page-1">
-    <mxGraphModel dx="946" dy="1369" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="1598" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="XprCKQyqKMap_J-1XE0t-80" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="XprCKQyqKMap_J-1XE0t-80" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="79.5" y="-200" width="559" height="557" as="geometry"/>
         </mxCell>
         <mxCell id="6vp1yoECgQzRmQz0F0uj-126" value="" style="endArrow=classic;html=1;strokeColor=#3333FF;strokeWidth=3;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="XprCKQyqKMap_J-1XE0t-80" source="6vp1yoECgQzRmQz0F0uj-124" target="28" edge="1">
@@ -22,7 +22,7 @@
         <mxCell id="79" value="" style="swimlane;shadow=0;strokeColor=#4277BB;fillColor=#ffffff;fontColor=#4277BB;align=right;startSize=0;collapsible=0;strokeWidth=3;" parent="XprCKQyqKMap_J-1XE0t-80" vertex="1">
           <mxGeometry x="410.5" y="150" width="137" height="394" as="geometry"/>
         </mxCell>
-        <mxCell id="6vp1yoECgQzRmQz0F0uj-142" value="&lt;font style=&quot;font-size: 16px&quot;&gt;Public GPU Cloud&lt;/font&gt;" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn2.iconfinder.com/data/icons/crystalproject/64x64/apps/nautilus.png" parent="79" vertex="1">
+        <mxCell id="6vp1yoECgQzRmQz0F0uj-142" value="&lt;font style=&quot;font-size: 18px&quot;&gt;Public Cloud&lt;/font&gt;" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://cdn2.iconfinder.com/data/icons/crystalproject/64x64/apps/nautilus.png" parent="79" vertex="1">
           <mxGeometry x="21.5" y="6" width="94" height="94" as="geometry"/>
         </mxCell>
         <mxCell id="6vp1yoECgQzRmQz0F0uj-143" value="" style="endArrow=none;html=1;strokeWidth=3;strokeColor=#3333FF;" parent="79" edge="1">
