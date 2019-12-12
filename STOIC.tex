@@ -1,71 +1,155 @@
 \begin{figure}
     \centering
     \includegraphics[scale=0.4]{STOIC}
-    \caption{\textbf{The Architecture of STOIC}}
-    \label{fig:STOIC}
+    \caption{The STOIC Architecture \label{fig:STOIC}}
 \end{figure}
 
-To leverage accelerator and distributed scheduling using the serverless architecture, we have developed STOIC, a framework for executing machine learning applications in hybrid cloud consisting of edge devices and public data centers. The STOIC streamlines the end-to-end process of packaging, transferring, scheduling, executing and retrieving result for machine learning applications. Figure~\ref{fig:STOIC} shows three principal pillars of STOIC's architecture: Edge Controller, Edge Cloud, and Public Cloud.
+To leverage hardware acceleration and distributed scheduling within a serverless architecture, we have developed STOIC, a framework for executing analytics applications in multi-tier IoT (sensing-edge-cloud) settings. STOIC streamlines the end-to-end process of packaging, transferring, scheduling, executing, and result retrieval for machine learning applications. Figure~\ref{fig:STOIC} shows three principal pillars of STOIC's architecture: Edge Controller, Edge Cloud, and Public Cloud.
 
 \subsection{Edge Controller}
- We deploy a collection of edge devices, including multiple motion-detecting camera traps in open field and a local server as edge controller in the research facility at Sedgwick Natural Reserve~\cite{ref:sedgwick}. Across the field, especially at the water pond, we install camera traps to capture images of wildlife and they are connected by microwave link networks to edge controller in the research facility. When a camera trap detects motion, it takes photos and persists the images to the attached disk volume. Periodically, those camera traps transfer saved photos to the edge controller in the facility, where STOIC's socket server constantly listens for batches of images and the cloud scheduler assigns the task to different cloud components. 
+ We deploy a collection of edge devices, including multiple motion-detecting camera traps in open field and a local server as edge controller in the research facility at Sedgwick Natural Reserve~\cite{ref:sedgwick}. 
+In this deployment, we install motion-triggered cameras (i.e. camera traps) at 
+watering holes to capture images of wildlife in their natural habitat (as part of conservation science studies). The cameras are connected via a wireless
+radio to a computer located in an out building at the reserve.  
+We refer to this computer as the edge controller.  It is contectect to 
+a private campus cloud via a microwave link.
+When a camera trap detects motion, it takes photos and persists the images in
+flash storage. Periodically, the camera traps transfer saved photos to the edge controller. STOIC runs on the edge controller and its execution is
+triggered by the arrival of batches of images from camera traps located
+across the reserve. When a batch arrives, STOIC partitions the image processing
+application (for object/animal classification) into tasks that it assigns
+to 1+ cloud components.
  
  \subsection{Edge Cloud}
  
- As an intermediate layer between the edge controller and public cloud, edge cloud can be placed anywhere, preferably near edge devices, to lower the latency. We currently built it up in our lab by a cluster of nine Intel NUCs~\cite{ref:nucs} with a direct connection over microwave radio to the edge devices at Sedgwick Natural Reserve. Eucalyptus cloud system~\cite{ref:euca} manages the edge cloud and supports Linux virtual machine instance of Ubuntu and CentOS. Running on an instance, the STOIC socket client listens for the request from edge controller and, then, either executes the job locally on edge cloud or has STOIC requester interact with public cloud to complete the designated task.
+As an intermediate computational tier between the sensors and public cloud, the edge cloud can be placed anywhere, preferably near the edge devices, to lower the response latency of analytics applications processing the images. Our edge cloud is currently deploy in our lab on campus which is connected to the edge controller via a fast network link.
+
+Our edge cloud consists of a cluster of nine Intel NUCs~\cite{ref:nucs}.
+Eucalyptus cloud system~\cite{ref:euca} manages the edge cloud and supports Linux virtual machine instances. Running on an instance, the STOIC socket client listens for the request from edge controller and then either executes the job locally on edge cloud or has STOIC requester interact with public cloud to complete the designated task.
  
- \subsection{Public Cloud}
- 
- In our implementation, Nautilus Cloud~\cite{ref:nautilus} serves as the public cloud. Nautilus cloud is a HyperCluster research platform led by researchers at UC San Diego, National Science Foundation, Department of Energy and various participating universities globally. Being designed for running data and computation intensive applications, Nautilus uses Kubernetes~\cite{ref:k8s} as an interface to manage and scale containerized applications and uses Rook~\cite{ref:rook} to automate Ceph~\cite{ref:ceph} data services. As of Nov. 2019, 141 computing nodes across the US joined Nautilus Cloud and 422 GPUs are available in the cluster. All these nodes are connected via a multi-campus network. We consider Nautilus as an ideal public cloud to leverage accelerator (GPUs) in serverless architecture to serve edge devices. 
+ \subsection{Remote Public/Private Cloud}
+
+To investigate the use of the serverless architecture with hardware 
+accelerators, we employ a shared, multi-university, GPU cloud 
+Nautilus~\cite{ref:nautilus} as our remote cloud system. Nautilus 
+is an Internet-connected, HyperCluster research platform led by researchers at UC San Diego, National Science Foundation, the Department of Energy, and various participating universities globally.  Being designed for running data and computationally intensive applications, Nautilus uses Kubernetes~\cite{ref:k8s} as an interface to manage and scale containerized applications.  It uses 
+Rook~\cite{ref:rook} to integrate Ceph~\cite{ref:ceph} data services. 
+As of Nov. 2019, Nautilus consists of 141 computing nodes across the US 
+and 422 GPUs are available in the cluster. All of these nodes are 
+connected via a multi-campus network. In this study, we consider 
+Nautilus as a public cloud which enables us to leverage 
+hardware acceleration (GPUs) in the serverless 
+architecture to serve edge devices. 
  
  \subsection{Implementation}
  
- \subsubsection{Language}
- Considering performance and interface, we develop STOIC primarily in Golang, since the language provides better performance than scripting language like Python, as well as user-friendly interface~\cite{ref:client-go} to Kubernetes. 
+ Considering performance and interface, we
+implement STOIC using Golang~\cite{golang}. Golang provides high 
+performance (vs scripting languages)and a user-friendly 
+interface~\cite{ref:client-go} to Kubernetes.  STOIC currently supports
+machine learning applications developed using the TensorFlow 
+framework~\cite{ref:tensorflow}.
  
  \BlankLine
  \subsubsection{Serverless framework}
- To enable Serverless architecture, STOIC employs kubeless~\cite{ref:kubeless} and Docker~\cite{ref:docker} at Nautilus Cloud. As a Kubernetes-native serverless framework, kubeless uses CRD (Custom Resource Definition)\cite{ref:crd} to dynamically create functions as Kubernetes custom resources and launches runtimes on-demand. For specific machine learning tasks that STOIC executes, we use Docker to build up customized runtime image and upload it to Docker Hub~\cite{ref:dockerhub} in advance. When the function controller at Nautilus Cloud receies a task request, it pulls the latest image from Docker Hub before launching the function. This deployment pipeline makes the runtime flexible and extensible for evolving applications. 
+ For our serverless architecture, STOIC employs 
+kubeless~\cite{ref:kubeless} and Docker~\cite{ref:docker} in the
+ Nautilus Cloud. As a Kubernetes-native serverless framework, 
+kubeless uses the Custom Resource Definition (CRD)\cite{ref:crd} to dynamically create functions as Kubernetes custom resources and launches runtimes on-demand. For specific machine learning tasks that STOIC executes, we use Docker to build customized runtime images that we upload to Docker 
+Hub~\cite{ref:dockerhub} in advance. When the function controller 
+at Nautilus Cloud receives a task request, it pulls the latest image 
+from Docker Hub before launching the function. This deployment pipeline 
+makes the runtime flexible and extensible for evolving applications. 
  
- For edge cloud, it currently runs the task directly by the binaries instead of invoking serverless functions. We make this design decision to simplify STOIC's control plane, but consider constructing a consistent serverless architecture across edge cloud and public cloud as future work.
+For the edge cloud, we execute tasks by directly invoking
+the application function binaries. We make this design decision to simplify STOIC's control plane in  our prototype but we investigating the use of
+a consistent serverless architecture across edge and public/private 
+cloud as part of future work.
  
  \BlankLine
- \subsubsection{Customized Library}
- To better leverage the computational power of CPU in Edge and Public Cloud, we compile a Tensorflow~\cite{ref:tensorflow} package from source with AVX2, SSE4.2~\cite{ref:avx} and FMA~\cite{ref:fma} instruction set support. We then test the performance of customized Tensorflow package on three common machine learning training tasks: \textbf{(A)} \textit{Iris}~\cite{ref:iris} with 10-fold cross-validation; \textbf{(B)} \textit{MNIST}~\cite{ref:mnist} on 20 Epochs; \textbf{(C)} \textit{InceptionV3}~\cite{ref:v3} on 10 epochs with 1,000 images. We execute these applications 10 times on standard and customized Tensorflow packages to ensure the result is reliable. Table~\ref{tab:avx} describes the mean execution time of three benchmarks both on standard and customized Tensorflow. We calculate speed-up as $(T_s - T_c) / T_s$, where $T_s$ and $T_c$ represent the execution time by the standard and customized Tensorflow library respectively. We observe that, in all three benchmarks, the customized library gains concrete speedup ranging from 17.4\% to 29.5\%. Since the instruction set support accelerates the machine learning task on CPU runtime, we install the customized package on both edge cloud and Nautilus cloud Docker image to take advantage of the acceleration.
+ \subsubsection{STOIC Library Support}
+ To leverage the computational power of the CPU systems available 
+in the Edge and Public Cloud, we compile Tensorflow from source with AVX2, SSE4.2~\cite{ref:avx} and FMA~\cite{ref:fma} instruction set support. We then test the performance of customized Tensorflow package on three common machine learning training tasks: \textbf{(A)} \textit{Iris}~\cite{ref:iris} with 10-fold cross-validation; \textbf{(B)} \textit{MNIST}~\cite{ref:mnist} on 20 Epochs; \textbf{(C)} \textit{InceptionV3}~\cite{ref:v3} on 10 epochs with 1,000 images. 
+
+We execute these applications 10 times on standard and customized Tensorflow packages. Table~\ref{tab:avx} shows the mean execution time of three benchmarks 
+for each package. We calculate speed-up as $(T_s - T_c) / T_s$, where $T_s$ and $T_c$ represent the execution time by the standard and customized Tensorflow library respectively. We observe that, in all three benchmarks, the customized library achieves a speedup that ranges from 17.4\% to 29.5\%. STOIC uses
+the customized TensorFlow packages for cloud systems that implement these
+instruction sets.  In our prototype, both the edge and public cloud have
+these extensions.
  
  \BlankLine
  \subsubsection{GPU Accessibility}
- To enable GPU access from Serverless function, we build up our runtime image based off NVIDIA Container Toolkit~\cite{ref:nvidia}, which includes NVIDIA runtime library and utilities to allow serverless functions to leverage NVIDIA GPUs. We also install CUDA 10.0 and cuDNN 7.0 in the Docker image, which is compatible with most GPU nodes' version in the Nautilus cloud. 
+ To enable GPU access by serverless functions, we build a container with
+NVIDIA Container Toolkit~\cite{ref:nvidia} support.  Such support 
+includes the NVIDIA runtime library and utilities which
+link serverless functions to NVIDIA GPUs. We also install CUDA 10.0 
+and cuDNN 7.0 in the image.
  
 \begin{table}[]
 \centering
 \input{tables/avx}
-\caption{\textbf{Performance comparison of customized Tensorflow library}: The table lists the mean execution time of three benchmarks by the standard and customized library and corresponding speed-up.  }
-\label{tab:avx}
+\caption{Performance comparison of Tensorflow library compiled with and without AVX2/SSE/FMA CPU instruction set support. The table shows the mean execution time across 10 runs and the corresponding percenta speed up of three machine learning benchmarks.  \label{tab:avx}}
 \end{table}
  
  \BlankLine
- \subsubsection{Runtime definition}
- To effectively schedule the machine learning tasks, we define four runtime scenarios across hybrid cloud: \textbf{(A)} \textit{edge} - A VM instance at edge cloud on spot with AVX2 support; \textbf{(B)} \textit{cpu} - A pod with CPU with AVX2 support; \textbf{(C)} \textit{gpu1} - A pod with single GPU; \textbf{(D)} \textit{gpu2} - A pod with two GPUs. STOIC launches and invokes the last three runtimes as kubeless functions in the Nautilus cloud. 
+ \subsubsection{STOIC Runtime}
+ To schedule the machine learning tasks across hybrid cloud deployments,
+we define four runtime scenarios: \textbf{(A)} \textit{edge} - A VM instance on the edge cloud with AVX2 support; \textbf{(B)} \textit{cpu} - A kubernetes pod on Nautilus containing a single CPU with AVX2 support; \textbf{(C)} \textit{gpu1} - A kubernetes pod on Nautilus containing a single GPU; \textbf{(D)} \textit{gpu2} - A kubernetes pod on Nautilus containing two GPUs. STOIC considers
+each of these deployment options as part of it scheduling decisions.
+Users can parameterize STOIC with their choice of deployment or allow 
+STOIC to automatically schedule their applications.
  
- For evaluation and canary deployment purpose, STOIC has implemented a feature flag of runtime that overrides the runtime selection made by scheduler when the user manually set the flag. This feature extensively helps evaluate the performance of STOIC, comparing with single-runtime schedulers.
+ %For evaluation and canary deployment purpose, STOIC has implemented a feature flag of runtime that overrides the runtime selection made by scheduler when the user manually set the flag. This feature extensively helps evaluate the performance of STOIC, comparing with single-runtime schedulers.
  
  
  \subsection{Execution Time Estimation}
- Depicted in Figure~\ref{fig:STOIC}, the socket server in edge cloud keeps listening for images transmitted from camera traps. Upon the end of a preset period (currently 1 hour), STOIC predicts the total response time~($T_r$) of the present batch, based on 4 different runtime scenarios. The total response time includes transfer time~($T_t$), runtime deployment time~($T_d$) and corresponding processing time~($T_p$): 
+ As depicted in Figure~\ref{fig:STOIC}, the STOIC socket server executes 
+in the edge cloud and listens for requests from the
+edge controller (machine learning job requests).  STOIC executes tasks
+on the edge and cloud system for a warm up period (parameterizable but
+currently set to 1 hour) during which it observes deployment and execution 
+times.  After the warmup period, STOIC estimates total 
+response time~($T_r$) of a requested batch, based on 4 different runtime scenarios. The total response time includes data transfer time~($T_t$), runtime deployment time~($T_d$) and corresponding processing time~($T_p$): 
  
- \subsubsection{Transfer time~($T_t$)} It measures the time spent in transmitting a compressed batch of images from edge controller to edge cloud and public cloud. We calculate transfer time as ${T_t = F_b / B_c}$ where $F_b$ represents the file size of batch and $B_c$ represents the bandwidth at the moment provided by a bandwidth monitor at edge controller. 
+ \subsubsection{Transfer time~($T_t$)} measures the time spent in transmitting a compressed batch of images from edge controller to edge cloud and public cloud. We calculate transfer time as ${T_t = F_b / B_c}$ where $F_b$ represents the file size of batch and $B_c$ represents the bandwidth at the moment provided by a bandwidth monitor at edge controller. 
  
  \subsubsection{Runtime deployment time~($T_d$)} It measures the time Nautilus uses to deploy requested kubeless function. Since the scarcity of computation, it is common that \textit{gpu2} runtime takes longer to deploy than \textit{gpu1} and \textit{cpu} runtimes. We analyze the deployment log and calculate the average deployment time for each Nautilus runtime. In future work, we plan to develop a feedback control loop to dynamically update deployment time for each runtime. Note that, for \textit{edge} runtime, the transfer and runtime deployment time zero out since STOIC executes the task locally in the edge cloud.
  
- \subsubsection{Processing time~($T_p$)} It is the execution time of a specific machine learning task. As a primary component for scheduling tasks across the hybrid cloud, we regress processing time based on prior experiment data by Bayesian Ridge Regression~\cite{ref:brr} due to its robustness to ill-posed problems compared to Ordinary Least Squares~\cite{ref:ols}. Thus, STOIC formulates the regression and predicts the processing time based on the file size of the current batch. Similarly to the runtime deployment time, we plan to construct a feedback control loop to dynamically update the coefficient and intercept of regression based on the incoming data of processing time as future work.
+ \subsubsection{Processing time~($T_p$)} is the execution time of a specific machine learning task. As a primary component for scheduling tasks across the hybrid cloud, we regress processing time based on prior experiment data by Bayesian Ridge Regression~\cite{ref:brr} due to its robustness to ill-posed problems compared to Ordinary Least Squares regression~\cite{ref:ols}. Thus, STOIC formulates the regression and uses it to predict the processing time based on the file size of the current batch. %Similarly to the runtime deployment time, we plan to construct a feedback control loop to dynamically update the coefficient and intercept of regression based on the incoming data of processing time as future work.
  
  \subsection{Workflow}
- The workflow of STOIC as follows: based on three time components aforementioned, STOIC predicts the total response times~($T_r$) of four scenarios and the scheduler selects the runtime with the least latency. Then, edge controller sends a request, including the payload of compressed image batch and runtime information, via socket server to edge cloud. Upon acceptance, edge cloud could execute the task locally if the choice is \textit{edge} runtime. It usually happens when the batch of images is relatively small and does not require much computation resources from public cloud.
+ The STOIC workflow is as follows: based on the three time components, STOIC predicts the total response times~($T_r$) of the four deployment options. The scheduler selects the runtime with the shortest estimated response time. 
+Then the edge controller sends a request, including the payload of compressed image batch and runtime information, to edge cloud. Upon acceptance, the edge cloud executes the task locally if the choice is the \textit{edge} runtime. Such
+deployment is common when a batch of images is small. 
+
+For large batch sizes, STOIC typically
+schedules one of the three
+public runtime options.
+For these three scenarios, the edge cloud first requests the deployment 
+on public cloud.  It then the payload to public cloud storage.
+The public cloud then deploys and executes the kubeless function. 
+As a design decision, instead of running a requester pod in the public
+cloud, we run an instance on the edge cloud.  We do so because the edge
+cloud is more stable and fault resilient than Nautilus which
+experiences intermittent downtime.  
  
- However, when the batch size increases, the task is highly likely to be scheduled at three public cloud runtimes. For these three scenarios, edge cloud first requests the deployment of the corresponding runtime and secondly sends the payload to public cloud, while public cloud deploys the kubeless function. As a design decision, instead of running a requester pod in Nautilus, we decide to run an instance in more stable and fault-tolerant edge cloud as a relay, because of the intermittent downtime on Nautilus nodes and the Ceph storage system. This design provides a more reliable infrastructure for tasks executed on STOIC.
- 
- On the other end, Nautilus cloud persists the received images to the shared storage in the Ceph file system, while monitoring the progress of deployment of kubeless function. Once it successfully deploys the serverless function, Nautilus informs the edge cloud's requester to trigger the function via HTTP request. When the task completes, the requester retrieves the results and runtime metrics, and transmits them back to the edge controller, which saves the results and metrics to the persistent storage. Up to this point, a full cycle of task execution on serverless architecture has completed.
+Once Nautilus successfully deploys the serverless function, it informs 
+the edge cloud's requester to trigger the function via an HTTP request. 
+When the task completes, the requester retrieves the results and 
+runtime metrics, and transmits them back to the edge controller. Finally,
+the controller saves the results and metrics to persistent storage. 
  
  \subsection{Intelligent Probing}
- In a series of experiments, we found the processing times from same image batch and kubeless function vary significantly between first one and following ones. After investigation, we discover the cold start~\cite{ref:coldstart} problem of serverless function causes such phenomenon. Specifically, most machine learning tasks require retrieval of stored model and dataset from a shared file system, and it is very likely that they reside in a spatially remote node on Nautilus cloud. Thus, the round-trip time between nodes is the root cause of the considerable latency at the first request. Once the function retrieve and cache the model and dataset during the first invocation, it can simply use them from the local memory and dramatically improve the performance. To approach this issue, STOIC intelligently probes the recently deployed function based on the transition of runtime. When STOIC schedules the incoming task in a different runtime than the previous one, according to the number of GPU, it triggers the function with the least amount of data to ensure the function caches the model and dataset in memory. Until then, STOIC starts triggering the actual tasks. To avoid redundant probing, STOIC starts the task directly when the designated runtime is the same as the previous batch.
+ With a series of experiments, we have found that the processing times from the same image batch and kubeless function can vary significantly between the
+first run and successive runs. This is due to the differences
+between cold and warm start~\cite{ref:coldstart}.  A cold start is
+when a machine learning task requires retrieval of stored model and 
+dataset from cloud storage, which takes time. Once the function 
+retrieves and caches this information, sucessive invocations of the
+function (using the same container) avoid this cost (i.e. experience
+a warm start). 
+
+STOIC accounts for cold and warm starts in its scheduling
+estimate using intelligent probes.  
+When STOIC schedules the incoming task in a different runtime than the previous one, it triggers the function with the least amount of input data to ensure the function caches the model and dataset in memory. Following this, STOIC 
+triggers the actual tasks. To avoid redundant probing, STOIC starts the task directly when the designated runtime is the same as the previous batch.

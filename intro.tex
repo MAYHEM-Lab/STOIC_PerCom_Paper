@@ -1,16 +1,45 @@
-Upon the recent shift of application architectures from monolithic to containers and microservices, serverless computing has risen as a promising cloud provider offering where event-driven functions compose all applications and services. It represents a revolutionary programming and deployment paradigm known as Function as a Service (FaaS). Using serverless model, developers can easily build up applications in a cloud without concerning server provisioning at the infrastructure level. Programmers usually write those functions in high-level languages and triggered by events either from external sources or, more often, internal cloud services. Thus, serverless architecture allows the application to distribute across the cloud by providing function-level abstraction.
+With the recent shift of application architectures from monolithic to containers and microservices, serverless computing has risen as a promising cloud service where simple, stateless, 
+event-driven functions comprise applications and services. 
+%It represents a revolutionary programming and deployment paradigm known as Function as a Service (FaaS). 
+Serverless platforms releave
+developers of the burdon of provisioning servers to deploy 
+cloud and web applications.
+Programmers typically write functions in high-level languages which are triggered by the platform in response to events from external sources or other cloud services. 
 
-Moreover, this function-level abstraction does not only abstract away the infrastructure management work from developers, but also, more importantly, provides more fine-grained computational resource isolation and usage, meaning each serverless function can autoscale independently based on the scale of incoming events. Providing such elasticity effectively avoids the single point failure and bottleneck service in a data-intensive application. From this perspective, serverless architecture is an ideal system for machine learning applications, especially for online training~\cite{ref:online} and model serving, because they usually transfer and handle a large amount of data, but the volume of each batch is uncertain and highly volatile depending on the data generated in that period. The flexibility that serverless functions deliver address such issue via the event-driven mechanism. 
+This function-level abstraction also provides fine-grained computational resource isolation and usage, meaning that each serverless function can autoscale independently based on the rate of incoming events. Providing such elasticity helps avoid a single point failure and performance bottlenecks in data-intensive application. From this perspective, serverless architecture is an ideal system for machine learning applications, especially for online training~\cite{ref:online} and inference, which transfer and manipulate large amounts of data or for 
+which the input sizes vary.
 
-To enable such an event-driven system, one concerning situation is that those machine learning applications usually evolve heterogeneous IoT devices, ranging from temperature sensors to mobile phones to autonomous drones, which are the primary data sources in the physical world. If the applications execute, at least partially, on the edge cloud, it could save lengthy round-trip time of transmitting data and make the application infinitely close to real-time. Such demand motivates us and we explore the effectiveness and efficiency of executing machine learning applications on the edge cloud in this work. 
+To enable such an event-driven system, one concerning situation is for machine learning applications that receive their data from  heterogeneous IoT devices, ranging from temperature sensors to mobile phones to autonomous drones. For such deployments, application execution should be ``near'' (in terms of network latency) the data sources to achieve fast response times. Such settings
+motivate us to explore extending the serverless model to the edge for execution of data analytics applications.
 
-An immediate difficulty we face is the scarcity of computational resources on edge cloud relative to high-demanding machine learning applications. In addition, no cloud provider offers serverless functions that leverage accelerators like GPU. In our work, we construct a hybrid cloud system that enables serverless function to utilize GPU, which substantially accelerates the execution of machine learning applications. We consider it as one of the key contributions of our research.
+One challenge with edge computing is the scarcity of computational resources relative to resource rich public and private clouds.  Moreover, public/private clouds may offer specialized hardware (e.g. GPUs) that significantly speed 
+up machine learning applications, which is not commonly available 
+in resource-restricted edge clouds.
+In our work, we investigate how to extend the serverless computing model
+to hybrid cloud systems that consist of edge and cloud resources and that
+integrate GPU acceleration. 
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.25]{figures/edge}
-    \caption{\textbf{The Design Principle of STOIC}}
-    \label{fig:edge}
+    \caption{Abstract Design of STOIC -- a system for executing
+distributed machine learning applications in IoT (e.g. edge + cloud) settings.
+\label{fig:edge}}
 \end{figure}
 
-Figure~\ref{fig:edge} illustrates the design principles of our proposed system, STOIC (Serverless TeleOperable Hybrid Cloud). In our design, three underpinnings support the center edge cloud: IoT devices stream data in batches for training and inference; serverless architecture provides flexibility and elasticity to handle auto-scaling and unbalanced data payload; the accelerator offers an additional computational resource for extra large dataset and compute-intensive machine learning applications. In this paper, we discuss the design and implementation of this architecture, investigate the efficacy and  empirically evaluate its performance. We found STOIC reduces total response time, ranging from 6.48\% to 32.05\%, compared with four single runtimes. Finally, we show both related and future work and conclude.
+Toward this end, we present STOIC -- a Serverless TeleOperable Hybrid Cloud.
+As depicted in Figure~\ref{fig:edge}, STOIC is a framework 
+to which
+IoT devices stream data in batches for training and inference by
+machine learning applications.  The framework implements
+a serverless computing and deployment for the applications. Unique to STOIC
+however, is its scheduling system which automatically splits the application
+workload across edge and cloud systems.  Moreover STOIC takes advantage
+of GPU acceleration when available from the underlying cloud resource.  
+In this paper, we discuss the design and implementation of this architecture, investigate the efficacy of using this extended serverless model
+for machine learning applications that span edge-cloud systems, 
+and  empirically evaluate the performance of doing so. Using
+real workloads and deployments,  we  find that STOIC reduces total 
+response time of the applications we study from 6.48\% to 32.05\%, 
+compared with four different runtimes, each running in isolation. 
+Finally, we discuss related and future work and conclude.

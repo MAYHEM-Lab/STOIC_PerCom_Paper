@@ -1,3 +1,27 @@
-Serverless computing emerges as a promising execution framework on the cloud for machine learning applications, considering the flexibility and elasticity it offers. However, the imbalance of computing resources between edge and public cloud dampens the availability and efficiency of serverless architecture, and consumes extraneous energy and costs from end-users. 
+Serverless computing is a promising new event-driven  programming
+model that was designed by cloud vendors 
+to expedite development and deployment of scalable
+web services on cloud computing systems. Using the model, developers 
+write applications that consist of simple, independent, stateless functions
+that the cloud invokes on-demand (i.e. elastically),
+in response to system wide events (data arrival, messages, web requests, etc.).
 
-The goal of our work is to bridge this gap by intelligently deploying tasks and making accelerator(e.g. GPU) serve edge devices in a robust and fault-tolerant fashion on serverless architecture. To enable this, we developed an open-source cloud system called STOIC (Serverless TeleOperable HybrId Cloud), which leverages accelerators as a serverless service and schedules machine learning tasks across hybrid cloud system. Through our evaluation, STOIC outperforms single-runtime systems on real-world applications for IoT devices and edge cloud. In this paper, we present the design and implementation of STOIC, along with the empirical evaluation of its efficacy and performance for machine learning applications.
+In this work, we present
+STOIC (Serverless TeleOperable HybrId Cloud), an application
+scheduling and deployment system that 
+extends the serverless model in two ways.  First,
+it uses the model in a distributed setting and schedules application
+functions across multiple cloud systems.
+Second, STOIC supports serverless function execution using 
+hardware acceleration (e.g. GPU resources) when available from the
+underlying cloud system. We overview the design and implementation
+of STOIC and empirically evaluate  it 
+using real-world machine learning applications and multi-tier 
+(e.g. edge-cloud) deployments.  
+We find that STOIC's combined use of edge and cloud resources
+is able to outperform using either cloud in isolation 
+for the applications and datasets that we consider.
+
+%Through our evaluation, STOIC outperforms single-runtime systems on real-world applications for IoT devices and edge cloud. In this paper, we present the design and implementation of STOIC, along with the empirical evaluation of its efficacy and performance for machine learning applications.
+
+%simple  on the cloud for machine learning applications, considering the flexibility and elasticity it offers. However, the imbalance of computing resources between edge and public cloud dampens the availability and efficiency of serverless architecture, and consumes extraneous energy and costs from end-users. 
