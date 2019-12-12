@@ -33,8 +33,9 @@ to which
 IoT devices stream data in batches for training and inference by
 machine learning applications.  The framework implements
 a serverless computing and deployment for the applications. Unique to STOIC
-however, is its scheduling system which automatically splits the application
-workload across edge and cloud systems.  Moreover STOIC takes advantage
+however, is its scheduling system which intelligently places the application
+workload on edge and cloud systems that it predicts will result in the fastest
+time to completion.  Moreover STOIC takes advantage
 of GPU acceleration when available from the underlying cloud resource.  
 In this paper, we discuss the design and implementation of this architecture, investigate the efficacy of using this extended serverless model
 for machine learning applications that span edge-cloud systems, 
