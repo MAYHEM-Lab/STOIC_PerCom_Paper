@@ -9,14 +9,13 @@ present our experimental setup and results.
 We evaluate STOIC using an image processing application that classifies animal images from a wildlife monitoring system called ``Where's The Bear" (WTB)~\cite{ref:wtb}. ``Where's The Bear" is an end-to-end distributed data acquisition and analytics system that implements an IoT architecture and edge cloud. Our application makes inferences for each photo taken by deployed camera traps in Sedgwick Natural Reserve using a convolutional neural network (CNN)~\cite{ref:cnn}.  We train the model using labeled images from the WTB dataset. Technically, the application employs Tensorflow and Scikit-learn~\cite{ref:scikit} to implement 
 image classification.  
 
-In total, there are five classes that we consider in the CNN model training: Bird, Fox, Rodent, Human and Empty. Since class size is unbalanced due to frequencies of animal occurrances, we up-sample minority classes (e.g. fox) using 
-the Keras ImageDataGenerator~\cite{ref:keras}.  Doing so ensures that the classification model is not biased. We resize every image in the WTB dataset to $1920 \times 1080$, and for each class, the dataset contains 251 images used to train the CNN model. Once model training is complete, the application stores this model in hdf5 format in cloud storage at both edge cloud (disk storage) and Nautilus (a shared volume in a Ceph file system).
+In total, there are five classes that we consider in the CNN model training: Bird, Fox, Rodent, Human and Empty. Since class size is unbalanced due to frequencies of animal occurrences, we up-sample minority classes (e.g. fox) using the Keras ImageDataGenerator~\cite{ref:keras}.  Doing so ensures that the classification model is not biased. We resize every image in the WTB dataset to $1920 \times 1080$, and for each class, the dataset contains 251 images used to train the CNN model. Once model training is complete, the application stores this model in hdf5 format in cloud storage at both edge cloud (disk storage) and Nautilus (a shared volume in a Ceph file system).
 
 \subsection{Performance Evaluation}
 
 \begin{table}[t] \centering 
 \input{tables/validation}
-\caption{Mean and stdev of total response time~($T_r$) and processing time~($T_p$) of 40-image batch: STOIC schedules tasks onto the runtime (\textit{gpu1}) that has the least total response time~($T_r$).
+\caption{Mean and stdev. of total response time~($T_r$) and processing time~($T_p$) of 40-image batch: STOIC schedules tasks onto the runtime (\textit{gpu1}) that has the least total response time~($T_r$).
 \label{tab:validation}}
 \end{table}
 
@@ -28,10 +27,9 @@ We first test the efficacy of STOIC by processing an image batch of fixed size a
 \label{fig:response-time}}
 \end{figure}
 
-We next test STOIC by processing a series of image batches of growing sizes on the four runtimes and STOIC. Figure~\ref{fig:response-time} shows their total response times. The x-axis is the size of the image batch and the y-axis is the total response time~($T_r$) in seconds. The red curve show that latency
-increases linearly over the \textit{edge} runtime.  The yellow curve 
-shows the performance of the \textit{cpu} runtime in the Nautilus cloud. 
-We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus cloud are usually more powerful than those in the edge cloud. The pink and green curve represent the \textit{gpu1} and \textit{gpu2} runtimes, respectively, and they intersect at a batch size of 95, at which STOIC would switch the deployment of task from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of tasks to the runtime with the least latency. According to such result, STOIC improves system performance by determining the best runtime
+We next test STOIC by processing a series of image batches of growing sizes on the four runtimes and STOIC. Figure~\ref{fig:response-time} shows their total response times. The x-axis is the size of the image batch and the y-axis is the total response time~($T_r$) in seconds. The red curve shows that latency
+increases linearly over the \textit{edge} runtime.  The yellow curve shows the performance of the \textit{cpu} runtime in the Nautilus cloud. 
+We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus cloud are usually more powerful than those in the edge cloud. The pink and green curve represent the \textit{gpu1} and \textit{gpu2} runtimes, respectively, and they intersect at a batch size of 95, at which STOIC would switch the deployment of tasks from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of tasks to the runtime with the least latency. According to such result, STOIC improves system performance by determining the best runtime
 for the given task dynamically.
 
 
@@ -46,10 +44,7 @@ for the given task dynamically.
 % \end{table}
 
 
-We next perform an empirical evaluation of STOIC by comparing the 
-total response time~($T_r$) of multiple image batches of different
-sizes across the four single runtimes and STOIC.  To accelerate the 
-repetitive experiment, we developed a simulator to generate image batches based on the frequency distribution of the WTB dataset. 
+We next perform an empirical evaluation of STOIC by comparing the total response time~($T_r$) of multiple image batches of different sizes across the four single runtimes and STOIC.  To accelerate the repetitive experiment, we developed a simulator to generate image batches based on the frequency distribution of the WTB dataset. 
 
 According to 2016 WTB dataset, the size of image batch fits to normal distribution $\mathbf{N}(\mu = 42.75, \sigma^2 = 39.5)$. Thus, the simulator generates 24 image batches in the edge controller to emulate streaming data in one day from open field camera traps. To conduct an unbiased evaluation, we seed the simulator to make these 24 image batches consistent across all runtimes and STOIC. 
 
