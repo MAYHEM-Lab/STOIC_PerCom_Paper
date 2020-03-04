@@ -13,13 +13,17 @@ In total, there are five classes that we consider in the CNN model training: Bir
 
 \subsection{Performance Evaluation}
 
-\begin{table}[t] \centering 
+\begin{table}[t] 
+\centering
+\captionsetup{justification=centering}
+\caption{ \hspace{0pt} \\
+\textsc{Mean and Stdev. of Total Response Time~($T_r$) and Processing Time~($T_p$) of 40-Image Batch: STOIC Schedules Tasks onto the Runtime (\textit{gpu1}) that Has the Least Total Response Time~($T_r$).}}
 \input{tables/validation}
-\caption{Mean and stdev. of total response time~($T_r$) and processing time~($T_p$) of 40-image batch: STOIC schedules tasks onto the runtime (\textit{gpu1}) that has the least total response time~($T_r$).
-\label{tab:validation}}
+
+\label{tab:validation}
 \end{table}
 
-We first test the efficacy of STOIC by processing an image batch of fixed size at four runtimes individually and then compare them with STOIC. To make the result reliable, we again conduct the experiment 10 times and list the mean and standard deviation of total response time~($T_r$) and processing time~($T_p$) in Table~\ref{tab:validation}. We can observe from Table~\ref{tab:validation} that STOIC schedules 40-image batch to \textit{gpu1} runtime, based on its prediction that  \textit{gpu1} would have the least total response time~($T_r$). One important observation is that \textit{gpu2} runtime has even lower processing time~($T_p$) than \textit{gpu1}, but STOIC disregard \textit{gpu2} in this scenario, because its gain in processing time~($T_p$) does not compensate for its lengthy deployment time~($T_d$) on Nautilus cloud.
+We first test the efficacy of STOIC by processing an image batch of fixed size at four runtimes individually and then compare them with STOIC. To make the result reliable, we again experiment 10 times and list the mean and standard deviation of total response time~($T_r$) and processing time~($T_p$) in Table~\ref{tab:validation}. We can observe from Table~\ref{tab:validation} that STOIC schedules 40-image batch to \textit{gpu1} runtime, based on its prediction that  \textit{gpu1} would have the least total response time~($T_r$). One important observation is that \textit{gpu2} runtime has even lower processing time~($T_p$) than \textit{gpu1}, but STOIC disregard \textit{gpu2} in this scenario, because its gain in processing time~($T_p$) does not compensate for its lengthy deployment time~($T_d$) on the Nautilus cloud.
 
 \begin{figure}[t] \centering 
 \includegraphics[scale=0.32]{response-time}
@@ -29,7 +33,7 @@ We first test the efficacy of STOIC by processing an image batch of fixed size a
 
 We next test STOIC by processing a series of image batches of growing sizes on the four runtimes and STOIC. Figure~\ref{fig:response-time} shows their total response times. The x-axis is the size of the image batch and the y-axis is the total response time~($T_r$) in seconds. The red curve shows that latency
 increases linearly over the \textit{edge} runtime.  The yellow curve shows the performance of the \textit{cpu} runtime in the Nautilus cloud. 
-We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus cloud are usually more powerful than those in the edge cloud. The pink and green curve represent the \textit{gpu1} and \textit{gpu2} runtimes, respectively, and they intersect at a batch size of 95, at which STOIC would switch the deployment of tasks from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of tasks to the runtime with the least latency. According to such result, STOIC improves system performance by determining the best runtime
+We observe that its slope is more moderate than \textit{edge} runtime since CPUs in nodes of Nautilus cloud are usually more powerful than those in the edge cloud. The pink and green curves represent the \textit{gpu1} and \textit{gpu2} runtimes, respectively, and they intersect at a batch size of 95, at which STOIC would switch the deployment of tasks from \textit{gpu1} to \textit{gpu2}. The blue dashed line depicts the total response time~($T_r$) of STOIC, which is able to schedule a series of tasks to the runtime with the least latency. According to such result, STOIC improves system performance by determining the best runtime
 for the given task dynamically.
 
 
@@ -54,4 +58,4 @@ According to 2016 WTB dataset, the size of image batch fits to normal distributi
 \label{fig:24-batch}}
 \end{figure}
 
-To ensure the validity of the outcome, we run each experiment 10 times for each runtime scenario and report the average value. Figure~\ref{fig:24-batch} shows the average total response time~($T_r$) for STOIC and the four individual runtimes. STOIC achieves the lowest average latency versus the four other single runtimes.  STOIC reduces total response time~($T_r$) by 32.05\% (versus \textit{edge}), 6.48\% (versus \textit{cpu}), 11.15\% (versus \textit{gpu1}) and 12.24\% (versus \textit{gpu2}) respectively. According to such a result, we conclude that STOIC outperforms single-runtime scheduling mechanism on the empirical datasets and real-world machine learning applications.
+To ensure the validity of the outcome, we run each experiment 10 times for each runtime scenario and report the average value. Figure~\ref{fig:24-batch} shows the average total response time~($T_r$) for STOIC and the four individual runtimes. STOIC achieves the lowest average latency versus the four other single runtimes.  STOIC reduces total response time~($T_r$) by 32.05\% (versus \textit{edge}), 6.48\% (versus \textit{cpu}), 11.15\% (versus \textit{gpu1}) and 12.24\% (versus \textit{gpu2}) respectively. According to such a result, we conclude that STOIC outperforms any single-runtime scheduling mechanism on the empirical datasets and real-world machine learning applications.
